@@ -77,27 +77,27 @@ class MainWindow(QtGui.QMainWindow):
             
         self.hBoxColor = QtGui.QHBoxLayout()
         self.hBoxColor.setMargin(0)
-        colorWidgets = {}
-        labelWidgets = {}
-        vBoxLabels = {}
-        for key in colors:
-            colorWidgets[key] = (QtGui.QWidget())
-            labelWidgets[key] = (QtGui.QLabel())
-            vBoxLabels[key] = (QtGui.QVBoxLayout())
+        colorWidgets = []
+        labelWidgets = []
+        vBoxLabels = []
+        for key, color in enumerate(colors):
+            colorWidgets.append(QtGui.QWidget())
+            labelWidgets.append(QtGui.QLabel())
+            vBoxLabels.append(QtGui.QVBoxLayout())
             vBoxLabels[key].setMargin(0)
 
             self.hBoxColor.addWidget(colorWidgets[key])
 
             # Отображаем один из доминирующих цветов
-            colorWidgets[key].setStyleSheet("QWidget { background-color: #%s }" % key)
+            colorWidgets[key].setStyleSheet("QWidget { background-color: #%s }" % color)
             colorWidgets[key].setLayout(vBoxLabels[key])
 
             vBoxLabels[key].addWidget(labelWidgets[key])
 
-            labelWidgets[key].setText("#%s" % key)
+            labelWidgets[key].setText("#%s" % color)
             labelWidgets[key].setAlignment(QtCore.Qt.AlignHCenter | QtCore.Qt.AlignVCenter)
             labelWidgets[key].setTextInteractionFlags(QtCore.Qt.LinksAccessibleByMouse | QtCore.Qt.TextSelectableByMouse)
-            labelWidgets[key].setStyleSheet("QWidget { color: %s }" % matching(key))
+            labelWidgets[key].setStyleSheet("QWidget { color: %s }" % matching(color))
         # Добавляем полученный набор виджетов на экран
         paint = QtGui.QWidget()
         paint.setMaximumHeight(40)
