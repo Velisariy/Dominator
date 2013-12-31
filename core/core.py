@@ -19,9 +19,9 @@ def get_points(img):
 
 rtoh = lambda rgb: '%s' % ''.join(('%02x' % p for p in rgb))
 
-def colorz(filename, n=3):
+def colorz(filename, n=3, size=(100,100)):
     img = Image.open(filename)
-    img.thumbnail((100, 100))
+    img.thumbnail(size)
 
     points = get_points(img)
     clusters = kmeans(points, n, 1)
