@@ -45,7 +45,7 @@ class MainWindow(QtGui.QMainWindow):
 
         # Текст приветствия в окне
         helloText = QtGui.QTextBrowser()
-        f = open("hello.html", mode="r", encoding="cp1251")
+        f = open("hello.html", mode="r", encoding="utf8")
         helloText.setHtml(f.read())
         f.close()
         self.setCentralWidget(helloText)
