@@ -1,3 +1,4 @@
+#coding: UTF-8
 import sys
 from time import time
 from core import core
@@ -11,7 +12,7 @@ class MainWindow(QtGui.QMainWindow):
     def __init__(self):
         QtGui.QMainWindow.__init__(self)
         self.resize(640, 480)
-        self.setWindowTitle("Доминатор")
+        self.setWindowTitle(u"Доминатор")
         self.setWindowIcon(QtGui.QIcon('icons/icon.png'))
         self.statusBar()
 
@@ -45,8 +46,8 @@ class MainWindow(QtGui.QMainWindow):
 
         # Текст приветствия в окне
         helloText = QtGui.QTextBrowser()
-        f = open("hello.html", mode="r", encoding="utf8")
-        helloText.setHtml(f.read())
+        f = open("hello.html", mode="r")
+        helloText.setHtml(f.read().decode("utf-8"))
         f.close()
         self.setCentralWidget(helloText)
 
@@ -112,10 +113,10 @@ class MainWindow(QtGui.QMainWindow):
         mainWidget.setLayout(vBox)
 
         self.setCentralWidget(mainWidget)
-        self.statusBar().showMessage("Выполнено за {} сек.".format(round(time() - start, 3)))
+        self.statusBar().showMessage(u"Выполнено за {} сек.".format(round(time() - start, 3)))
 
     def showDialog(self):
-        self.filename = QtGui.QFileDialog.getOpenFileName(self, caption="Открыть изображение")
+        self.filename = QtGui.QFileDialog.getOpenFileName(self, caption=u"Открыть изображение")
         if self.filename:
             self.refreshImageAction.setDisabled(False)
             self.procImage(self.filename)
