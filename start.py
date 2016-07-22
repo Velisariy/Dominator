@@ -23,7 +23,7 @@ class MainWindow(QtGui.QMainWindow):
         self.setWindowTitle(u"Доминатор")
         self.setWindowIcon(QtGui.QIcon('icons/icon.png'))
 
-        self.openImage = QtGui.QAction(QtGui.QIcon('icons/fileopen.png'), 'Открыть файл', self)
+        self.openImage = QtGui.QAction(QtGui.QIcon('icons/fileopen.png'), u'Открыть файл', self)
         self.openImage.setShortcut('Ctrl+O')
         self.connect(self.openImage, QtCore.SIGNAL("triggered()"), self.showDialog)
         
@@ -32,11 +32,11 @@ class MainWindow(QtGui.QMainWindow):
         self.saveImage.setDisabled(True)
         self.connect(self.saveImage, QtCore.SIGNAL("triggered()"), self.saveDialog)
 
-        self.refreshImageAction = QtGui.QAction(QtGui.QIcon('icons/refresh.png'), 'Обновить', self)
+        self.refreshImageAction = QtGui.QAction(QtGui.QIcon('icons/refresh.png'), u'Обновить', self)
         self.refreshImageAction.setDisabled(True)  
         self.connect(self.refreshImageAction, QtCore.SIGNAL('triggered()'), self.refreshImage)
 
-        self.exit = QtGui.QAction(QtGui.QIcon('icons/exit.png'), 'Выход', self)
+        self.exit = QtGui.QAction(QtGui.QIcon('icons/exit.png'), u'Выход', self)
         self.connect(self.exit, QtCore.SIGNAL('triggered()'), QtCore.SLOT('close()'))
         
         # Отвечает за счетчик количества цветов. По умолчанию 3.
