@@ -1,7 +1,8 @@
-#-*-coding: utf-8 -*-
+# -*-coding: utf-8 -*-
 from collections import namedtuple
 from math import sqrt
 import random
+
 try:
     import Image
 except ImportError:
@@ -10,6 +11,7 @@ except ImportError:
 Point = namedtuple('Point', ('coords', 'n', 'ct'))
 Cluster = namedtuple('Cluster', ('points', 'center', 'n'))
 
+
 def get_points(img):
     points = []
     w, h = img.size
@@ -17,9 +19,11 @@ def get_points(img):
         points.append(Point(color, 3, count))
     return points
 
+
 rtoh = lambda rgb: '%s' % ''.join(('%02x' % p for p in rgb))
 
-def colorz(filename, n=3, size=(100,100)):
+
+def colorz(filename, n=3, size=(100, 100)):
     img = Image.open(filename)
     img.thumbnail(size)
 
@@ -29,10 +33,12 @@ def colorz(filename, n=3, size=(100,100)):
     result = map(rtoh, rgbs)
     return result
 
+
 def euclidean(p1, p2):
     return sqrt(sum([
-        (p1.coords[i] - p2.coords[i]) ** 2 for i in range(p1.n)
-    ]))
+                        (p1.coords[i] - p2.coords[i]) ** 2 for i in range(p1.n)
+                        ]))
+
 
 def calculate_center(points, n):
     vals = [0.0 for i in range(n)]
@@ -42,6 +48,7 @@ def calculate_center(points, n):
         for i in range(n):
             vals[i] += (p.coords[i] * p.ct)
     return Point([(v / plen) for v in vals], n, 1)
+
 
 def kmeans(points, k, min_diff):
     clusters = [Cluster([p], p, p.n) for p in random.sample(points, k)]

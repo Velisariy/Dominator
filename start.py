@@ -10,16 +10,17 @@ from reportlab.pdfbase import pdfmetrics
 from reportlab.pdfbase.ttfonts import TTFont
 from reportlab.lib.colors import HexColor
 
+
 class MainWindow(QtGui.QMainWindow):
-    '''
+    """
     Визуальная оболочка для вычисления доминирующих цветов в изображении
-    '''
+    """
     def __init__(self):
         QtGui.QMainWindow.__init__(self)
         self.resize(640, 480)
         self.colors = []
         self.filename = ''
-        self.setWindowTitle("Доминатор")
+        self.setWindowTitle(u"Доминатор")
         self.setWindowIcon(QtGui.QIcon('icons/icon.png'))
 
         self.openImage = QtGui.QAction(QtGui.QIcon('icons/fileopen.png'), 'Открыть файл', self)
@@ -43,7 +44,7 @@ class MainWindow(QtGui.QMainWindow):
         self.spinBox.setRange(1, 15)
         self.spinBox.setValue(3)
 
-        toolBar = self.addToolBar('Панель инструментов')
+        toolBar = self.addToolBar(u'Панель инструментов')
         toolBar.addAction(self.openImage)
         toolBar.addAction(self.saveImage)
         toolBar.addSeparator()
@@ -113,7 +114,7 @@ class MainWindow(QtGui.QMainWindow):
         mainWidget.setLayout(vBox)
 
         self.setCentralWidget(mainWidget)
-        self.statusBar().showMessage("Выполнено за {} сек.".format(round(time() - start, 3)))
+        self.statusBar().showMessage(u"Выполнено за {} сек.".format(round(time() - start, 3)))
         
     def saveDialog(self):
         file = QtGui.QFileDialog.getSaveFileName(self, caption="Сохранить изображение", filter="*.pdf")
@@ -134,7 +135,7 @@ class MainWindow(QtGui.QMainWindow):
         pdfmetrics.registerFont(TTFont('Arial', 'font/Arial.ttf'))
         
         canvas.setFont('Arial', 16)
-        canvas.drawString(20, 800, "Доминирующие цвета")
+        canvas.drawString(20, 800, u"Доминирующие цвета")
         
         canvas.setFont('Arial', 12)
         for key, color in enumerate(colors):
@@ -164,6 +165,7 @@ class MainWindow(QtGui.QMainWindow):
             else:
                 result = "#ffffff"
             return result
+
 
 def main():
     app = QtGui.QApplication(sys.argv)
