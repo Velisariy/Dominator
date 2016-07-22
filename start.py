@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-
+#coding: UTF-8
 import sys
 from time import time
 from core import core
@@ -58,8 +58,8 @@ class MainWindow(QtGui.QMainWindow):
 
         # Текст приветствия в окне
         helloText = QtGui.QTextBrowser()
-        f = open("hello.html", mode="r", encoding="utf8")
-        helloText.setHtml(f.read())
+        f = open("hello.html", mode="r")
+        helloText.setHtml(f.read().decode("utf-8"))
         f.close()
         self.setCentralWidget(helloText)
 
@@ -122,7 +122,7 @@ class MainWindow(QtGui.QMainWindow):
             self.savePdf(file)
         
     def showDialog(self):
-        self.filename = QtGui.QFileDialog.getOpenFileName(self, caption="Открыть изображение")
+        self.filename = QtGui.QFileDialog.getOpenFileName(self, caption=u"Открыть изображение")
         if self.filename:
             self.refreshImageAction.setDisabled(False)
             self.saveImage.setDisabled(False)
