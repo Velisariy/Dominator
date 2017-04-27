@@ -123,7 +123,8 @@ class MainWindow(QtWidgets.QMainWindow):
         self.statusBar().showMessage(u"Выполнено за {} сек.".format(round(time() - start, 3)))
 
     def saveDialog(self):
-        file = QtWidgets.QFileDialog.getSaveFileName(self, caption="Сохранить изображение", filter="*.pdf")
+        file = QtWidgets.QFileDialog.getSaveFileName(self, caption="Сохранить изображение", filter="*.pdf")[0]
+        
         if file:
             self.savePdf(file)
 
@@ -135,10 +136,6 @@ class MainWindow(QtWidgets.QMainWindow):
             self.procImage(self.filename)
 
     def savePdf(self, file):
-        file = file[0]
-        if not file:
-            return
-
         colors = self.colors
         imgfile = self.filename
         canvas = Canvas(file, pagesize=A4)
