@@ -174,7 +174,6 @@ class MainWindow(QtWidgets.QMainWindow):
 def main():
     app = QtWidgets.QApplication(sys.argv)
     window = MainWindow()
-    window.setWindowFlags(QtCore.Qt.WindowStaysOnTopHint)
     window.show()
     sys.exit(app.exec_())
 
