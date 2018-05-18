@@ -77,3 +77,16 @@ def kmeans(points, k, min_diff):
             break
 
     return clusters
+
+
+def matching(color):
+    '''
+    Сравнение цвета со средним значением
+    для читабельного отображения текста
+    '''
+    color.strip('#')
+    if int(color, 16) > int("888888", 16):
+        result = "#000000"
+    else:
+        result = "#ffffff"
+    return result
