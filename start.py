@@ -12,7 +12,7 @@ try:
     from reportlab.pdfbase.ttfonts import TTFont
     from reportlab.lib.colors import HexColor
 
-    pdf = False
+    pdf = True
 except ImportError:
     pdf = False
 
