@@ -4,6 +4,7 @@ import sys
 from time import time
 from core import core, design
 from PyQt5 import QtWidgets, QtGui
+from PyQt5.QtCore import QThread
 
 try:
     from reportlab.pdfgen.canvas import Canvas
@@ -15,6 +16,21 @@ try:
     pdf = False
 except ImportError:
     pdf = False
+
+
+class ImageCollector(QThread):
+    def __init__(self, filename: str, count: int):
+        super().__init__()
+
+        self.filename = filename
+        self.count = count
+        self.colors = []
+
+    def __del__(self):
+        self.wait()
+
+    def run(self):
+        self.colors = list(core.colorz(self.filename, self.count))
 
 
 class MainProgram(design.MainWindow):
@@ -29,16 +45,14 @@ class MainProgram(design.MainWindow):
         self.saveImage.triggered.connect(self.saveDialog)
         self.refreshImageAction.triggered.connect(self.refreshImage)
 
-    def procImage(self, filename):
-        start = time()
-
+    def _procImageDone(self):
         # Определяем список доминирующих цветов
-        self.colors = list(core.colorz(filename, self.spinBox.value()))
+        self.colors = self.colors_thread.colors
         self.colors.sort()
 
         # Загружаем изображение и редактируем его
         pix = QtGui.QPixmap()
-        pix.load(filename)
+        pix.load(self.filename)
         w = float(pix.width())
         h = float(pix.height())
         k = round(w / h, 2)
@@ -46,8 +60,18 @@ class MainProgram(design.MainWindow):
 
         self.colorsLayout(self.colors)
 
-        self.statusBar().showMessage(u"Выполнено за {} сек.".format(round(time() - start, 3)))
+        self.statusBar().showMessage("Выполнено за {} сек.".format(round(time() - self.start, 3)))
 
+        self.refreshImageAction.setDisabled(False)
+
+    def procImage(self, filename: str):
+        self.refreshImageAction.setDisabled(True)
+        self.start = time()
+        self.filename = filename
+
+        self.colors_thread = ImageCollector(filename, self.spinBox.value())
+        self.colors_thread.finished.connect(self._procImageDone)
+        self.colors_thread.start()
 
     def saveDialog(self):
         if not pdf:
@@ -59,19 +83,19 @@ class MainProgram(design.MainWindow):
             self.savePdf(file)
 
     def showDialog(self):
-        self.filename = QtWidgets.QFileDialog.getOpenFileName(caption=u"Открыть изображение")[0]
+        self.filename = QtWidgets.QFileDialog.getOpenFileName(caption="Открыть изображение")[0]
         if self.filename:
             self.refreshImageAction.setDisabled(False)
             self.saveImage.setDisabled(False)
             self.procImage(self.filename)
 
-    def savePdf(self, file):
+    def savePdf(self, file: str):
         colors = self.colors
         imgfile = self.filename
         canvas = Canvas(file, pagesize=A4)
         pdfmetrics.registerFont(TTFont('Arial', 'font/Arial.ttf'))
         canvas.setFont('Arial', 16)
-        canvas.drawString(20, 800, u"Доминирующие цвета")
+        canvas.drawString(20, 800, "Доминирующие цвета")
         canvas.setFont('Arial', 12)
         for key, color in enumerate(colors):
             canvas.setFillColor(HexColor('#%s' % color))
