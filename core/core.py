@@ -2,6 +2,7 @@
 from collections import namedtuple
 from math import sqrt
 import random
+import colorsys
 
 try:
     import Image
@@ -87,9 +88,9 @@ def matching(color):
     '''
     color.strip('#')
     rgb = tuple(int(color[i:i + 2], 16) for i in (0, 2, 4))
-    luminance = lum(*rgb)
+    luminance = colorsys.rgb_to_hls(*rgb)[1]
 
-    if luminance > 10:
+    if luminance > 180:
         result = "black"
     else:
         result = "white"
