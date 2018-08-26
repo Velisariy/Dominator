@@ -20,18 +20,15 @@ def get_points(img):
     return points
 
 
-rtoh = lambda rgb: '%s' % ''.join(('%02x' % p for p in rgb))
-
-
 def colorz(filename, n=3, size=(100, 100)):
     img = Image.open(filename)
     img.thumbnail(size)
 
     points = get_points(img)
     clusters = kmeans(points, n, 1)
-    rgbs = [map(int, c.center.coords) for c in clusters]
-    result = map(rtoh, rgbs)
-    return result
+    rgbs = [list(map(int, c.center.coords)) for c in clusters]
+
+    return rgbs
 
 
 def euclidean(p1, p2):
@@ -79,14 +76,22 @@ def kmeans(points, k, min_diff):
     return clusters
 
 
+def lum(r, g, b):
+    return sqrt(.241 * r + .691 * g + .068 * b)
+
+
 def matching(color):
     '''
     Сравнение цвета со средним значением
     для читабельного отображения текста
     '''
     color.strip('#')
-    if int(color, 16) > int("888888", 16):
-        result = "#000000"
+    rgb = tuple(int(color[i:i + 2], 16) for i in (0, 2, 4))
+    luminance = lum(*rgb)
+
+    if luminance > 10:
+        result = "black"
     else:
-        result = "#ffffff"
+        result = "white"
+
     return result

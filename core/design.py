@@ -3,6 +3,7 @@
 from PyQt5 import QtWidgets, QtCore, QtGui
 from core import core
 
+
 class MainWindow(QtWidgets.QMainWindow):
     """
     Визуальная оболочка для вычисления доминирующих цветов в изображении
