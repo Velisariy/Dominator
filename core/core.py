@@ -1,6 +1,6 @@
 # -*-coding: utf-8 -*-
 from collections import namedtuple
-from math import sqrt
+from math import sqrt, inf
 import random
 import colorsys
 
@@ -51,11 +51,11 @@ def calculate_center(points, n):
 def kmeans(points, k, min_diff):
     clusters = [Cluster([p], p, p.n) for p in random.sample(points, k)]
 
-    while 1:
+    while True:
         plists = [[] for i in range(k)]
 
         for p in points:
-            smallest_distance = float('Inf')
+            smallest_distance = inf
             for i in range(k):
                 distance = euclidean(p, clusters[i].center)
                 if distance < smallest_distance:

@@ -1,3 +1,7 @@
-reportlab >= 3.4.0
-Pillow >= 5.1.0
-PyQt5 ~= 5.10.1
+# Core dependencies
+Pillow>=10.0.0
+PyQt5>=5.15.0
+reportlab>=4.0.0
+
+# Development
+cx_Freeze>=7.0.0

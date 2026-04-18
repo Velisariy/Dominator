@@ -79,7 +79,9 @@ class MainProgram(design.MainWindow):
         h = float(pix.height())
         k = round(w / h, 2)
 
-        self.imgLabel.setPixmap(pix.scaled(800 * k, 800))
+        width = int(800 * k)
+        height = 800
+        self.imgLabel.setPixmap(pix.scaled(width, height))
 
         self.colorsLayout(self.colors)
 
