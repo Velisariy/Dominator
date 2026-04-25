@@ -1,7 +1,7 @@
 # Graph Report - /mnt/os/PyScripts/Dominator  (2026-04-25)
 
 ## Corpus Check
-- 5 files · ~10,348 words
+- 5 files · ~10,464 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
