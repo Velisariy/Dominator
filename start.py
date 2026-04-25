@@ -1,18 +1,18 @@
-# coding: UTF-8
+#!/usr/bin/env python3
 
 import colorsys
 import sys
 from time import time
 from core import core, design
-from PyQt5 import QtWidgets, QtGui
-from PyQt5.QtCore import QThread
+from PyQt6 import QtWidgets, QtGui
+from PyQt6.QtCore import QThread
 
 try:
     from reportlab.pdfgen.canvas import Canvas
     from reportlab.lib.pagesizes import A4
     from reportlab.pdfbase import pdfmetrics
     from reportlab.pdfbase.ttfonts import TTFont
-    from reportlab.lib.colors import HexColor
+    from reportlab.lib.colors import HexColor, Color
 
     pdf = True
 except ImportError:
@@ -102,9 +102,15 @@ class MainProgram(design.MainWindow):
         if not pdf:
             return self.message('Не установлена библиотека reportlab')
 
-        file = QtWidgets.QFileDialog.getSaveFileName(caption="Сохранить изображение", filter="*.pdf")[0]
+        file = QtWidgets.QFileDialog.getSaveFileName(caption="Сохранить изображение", filter="PDF (*.pdf)")[0]
 
-        if file and pdf:
+        if not file:
+            return
+
+        if not file.lower().endswith('.pdf'):
+            file += '.pdf'
+
+        if pdf:
             self.savePdf(file)
 
     def showDialog(self):
@@ -118,7 +124,7 @@ class MainProgram(design.MainWindow):
         colors = self.colors
         imgfile = self.filename
         canvas = Canvas(file, pagesize=A4)
-        pdfmetrics.registerFont(TTFont('Arial', 'font/Arial.ttf'))
+        pdfmetrics.registerFont(TTFont('Arial', 'font/arial.ttf'))
         canvas.setFont('Arial', 16)
         canvas.drawString(20, 800, "Доминирующие цвета")
         canvas.setFont('Arial', 12)
@@ -141,7 +147,7 @@ def main():
     app = QtWidgets.QApplication(sys.argv)
     window = MainProgram()
     window.show()
-    sys.exit(app.exec_())
+    sys.exit(app.exec())
 
 
 if __name__ == "__main__":

@@ -1,7 +1,7 @@
 # Core dependencies
-Pillow>=10.0.0
-PyQt5>=5.15.0
-reportlab>=4.0.0
+Pillow~=12.0
+PyQt6~=6.8
+reportlab~=4.3
 
 # Development
-cx_Freeze>=7.0.0
+cx_Freeze~=8.5

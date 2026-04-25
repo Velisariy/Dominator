@@ -1,4 +1,3 @@
-# -*-coding: utf-8 -*-
 from collections import namedtuple
 from math import sqrt, inf
 import random
@@ -86,13 +85,10 @@ def matching(color):
     Сравнение цвета со средним значением
     для читабельного отображения текста
     '''
-    color.strip('#')
     rgb = tuple(int(color[i:i + 2], 16) for i in (0, 2, 4))
     luminance = colorsys.rgb_to_hls(*rgb)[1]
 
     if luminance > 180:
-        result = "black"
+        return '#000000'
     else:
-        result = "white"
-
-    return result
+        return '#ffffff'
