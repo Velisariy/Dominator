@@ -1,18 +1,18 @@
-# coding: UTF-8
+#!/usr/bin/env python3
 
 import colorsys
 import sys
 from time import time
 from core import core, design
-from PyQt5 import QtWidgets, QtGui
-from PyQt5.QtCore import QThread
+from PyQt6 import QtWidgets, QtGui, QtCore
+from PyQt6.QtCore import QThread
 
 try:
     from reportlab.pdfgen.canvas import Canvas
     from reportlab.lib.pagesizes import A4
     from reportlab.pdfbase import pdfmetrics
     from reportlab.pdfbase.ttfonts import TTFont
-    from reportlab.lib.colors import HexColor
+    from reportlab.lib.colors import HexColor, Color
 
     pdf = True
 except ImportError:
@@ -65,29 +65,41 @@ class MainProgram(design.MainWindow):
         self.refreshImageAction.triggered.connect(self.refreshImage)
 
     def _procImageDone(self):
-        # Определяем список доминирующих цветов
         self._colors = self.colors_thread.colors
 
-        # Переведем в hex
         rtoh = lambda rgb: '%s' % ''.join(('%02x' % p for p in rgb))
         self.colors = list(map(rtoh, self._colors))
 
-        # Загружаем изображение и редактируем его
-        pix = QtGui.QPixmap()
-        pix.load(self.filename)
-        w = float(pix.width())
-        h = float(pix.height())
-        k = round(w / h, 2)
+        self._pix_original = QtGui.QPixmap()
+        self._pix_original.load(self.filename)
 
-        width = int(800 * k)
-        height = 800
-        self.imgLabel.setPixmap(pix.scaled(width, height))
+        self._scaleImage()
 
         self.colorsLayout(self.colors)
 
         self.statusBar().showMessage("Выполнено за {} сек.".format(round(time() - self.start, 3)))
-
         self.refreshImageAction.setDisabled(False)
+
+    def _scaleImage(self):
+        if not hasattr(self, '_pix_original') or self._pix_original.isNull():
+            return
+
+        available_w = self.imgLabel.width()
+        available_h = self.imgLabel.height()
+
+        if available_w <= 0 or available_h <= 0:
+            return
+
+        pix = self._pix_original.scaled(
+            available_w, available_h,
+            QtCore.Qt.AspectRatioMode.KeepAspectRatio,
+            QtCore.Qt.TransformationMode.SmoothTransformation
+        )
+        self.imgLabel.setPixmap(pix)
+
+    def resizeEvent(self, event):
+        super().resizeEvent(event)
+        self._scaleImage()
 
     def procImage(self, filename: str):
         self.refreshImageAction.setDisabled(True)
@@ -102,9 +114,15 @@ class MainProgram(design.MainWindow):
         if not pdf:
             return self.message('Не установлена библиотека reportlab')
 
-        file = QtWidgets.QFileDialog.getSaveFileName(caption="Сохранить изображение", filter="*.pdf")[0]
+        file = QtWidgets.QFileDialog.getSaveFileName(caption="Сохранить изображение", filter="PDF (*.pdf)")[0]
 
-        if file and pdf:
+        if not file:
+            return
+
+        if not file.lower().endswith('.pdf'):
+            file += '.pdf'
+
+        if pdf:
             self.savePdf(file)
 
     def showDialog(self):
@@ -118,7 +136,7 @@ class MainProgram(design.MainWindow):
         colors = self.colors
         imgfile = self.filename
         canvas = Canvas(file, pagesize=A4)
-        pdfmetrics.registerFont(TTFont('Arial', 'font/Arial.ttf'))
+        pdfmetrics.registerFont(TTFont('Arial', 'font/arial.ttf'))
         canvas.setFont('Arial', 16)
         canvas.drawString(20, 800, "Доминирующие цвета")
         canvas.setFont('Arial', 12)
@@ -141,7 +159,7 @@ def main():
     app = QtWidgets.QApplication(sys.argv)
     window = MainProgram()
     window.show()
-    sys.exit(app.exec_())
+    sys.exit(app.exec())
 
 
 if __name__ == "__main__":

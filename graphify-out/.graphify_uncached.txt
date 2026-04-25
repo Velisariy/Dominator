@@ -1,0 +1,9 @@
+AGENTS.md
+hello.html
+README.md
+requirements.txt
+icons/exit.png
+icons/fileopen.png
+icons/icon.png
+icons/refresh.png
+icons/save.png

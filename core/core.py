@@ -1,80 +1,62 @@
-# -*-coding: utf-8 -*-
 from collections import namedtuple
-from math import sqrt, inf
-import random
+from math import sqrt
 import colorsys
+import numpy as np
 
 try:
     import Image
 except ImportError:
     from PIL import Image
 
-Point = namedtuple('Point', ('coords', 'n', 'ct'))
-Cluster = namedtuple('Cluster', ('points', 'center', 'n'))
-
 
 def get_points(img):
-    points = []
     w, h = img.size
-    for count, color in img.getcolors(w * h):
-        points.append(Point(color, 3, count))
-    return points
+    result = img.getcolors(w * h)
+    if result is None:
+        result = img.convert('RGB').getcolors(w * h)
+    counts = np.array([r[0] for r in result], dtype=np.float64)
+    colors = np.array([r[1][:3] for r in result], dtype=np.float64)
+    return colors, counts
 
 
 def colorz(filename, n=3, size=(100, 100)):
     img = Image.open(filename)
     img.thumbnail(size)
 
-    points = get_points(img)
-    clusters = kmeans(points, n, 1)
-    rgbs = [list(map(int, c.center.coords)) for c in clusters]
+    coords, counts = get_points(img)
+    clusters = kmeans(coords, counts, n)
+    rgbs = [c.tolist() for c in clusters]
 
     return rgbs
 
 
-def euclidean(p1, p2):
-    return sqrt(sum([
-        (p1.coords[i] - p2.coords[i]) ** 2 for i in range(p1.n)
-    ]))
+def kmeans(coords, counts, k):
+    coords = np.asarray(coords)
+    counts = np.asarray(counts)
+    n_points = len(coords)
 
-
-def calculate_center(points, n):
-    vals = [0.0 for i in range(n)]
-    plen = 0
-    for p in points:
-        plen += p.ct
-        for i in range(n):
-            vals[i] += (p.coords[i] * p.ct)
-    return Point([(v / plen) for v in vals], n, 1)
-
-
-def kmeans(points, k, min_diff):
-    clusters = [Cluster([p], p, p.n) for p in random.sample(points, k)]
+    indices = np.random.choice(n_points, k, replace=False)
+    centers = coords[indices].copy()
 
     while True:
-        plists = [[] for i in range(k)]
+        distances = np.linalg.norm(coords[:, np.newaxis] - centers, axis=2)
+        assignments = np.argmin(distances, axis=1)
 
-        for p in points:
-            smallest_distance = inf
-            for i in range(k):
-                distance = euclidean(p, clusters[i].center)
-                if distance < smallest_distance:
-                    smallest_distance = distance
-                    idx = i
-            plists[idx].append(p)
-
-        diff = 0
+        new_centers = np.zeros_like(centers)
         for i in range(k):
-            old = clusters[i]
-            center = calculate_center(plists[i], old.n)
-            new = Cluster(plists[i], center, old.n)
-            clusters[i] = new
-            diff = max(diff, euclidean(old.center, new.center))
+            mask = assignments == i
+            if np.any(mask):
+                total_counts = counts[mask].sum()
+                weighted_sum = (coords[mask] * counts[mask, None]).sum(axis=0)
+                new_centers[i] = weighted_sum / total_counts
 
-        if diff < min_diff:
+        diff = np.max(np.linalg.norm(centers - new_centers, axis=1))
+        centers = new_centers
+
+        if diff < 1:
             break
 
-    return clusters
+    return np.round(centers).astype(int)
 
 
 def lum(r, g, b):
@@ -86,13 +68,10 @@ def matching(color):
     Сравнение цвета со средним значением
     для читабельного отображения текста
     '''
-    color.strip('#')
     rgb = tuple(int(color[i:i + 2], 16) for i in (0, 2, 4))
     luminance = colorsys.rgb_to_hls(*rgb)[1]
 
     if luminance > 180:
-        result = "black"
+        return '#000000'
     else:
-        result = "white"
-
-    return result
+        return '#ffffff'

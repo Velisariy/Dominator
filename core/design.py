@@ -1,6 +1,5 @@
-# coding: UTF-8
-
-from PyQt5 import QtWidgets, QtCore, QtGui
+from PyQt6 import QtWidgets, QtCore
+from PyQt6.QtGui import QAction, QIcon
 from core import core
 
 
@@ -13,22 +12,23 @@ class MainWindow(QtWidgets.QMainWindow):
         super().__init__()
 
         self.resize(640, 480)
+        self.setMinimumSize(100, 100)
         self.colors = []
         self.filename = ''
         self.setWindowTitle(u"Доминатор")
-        self.setWindowIcon(QtGui.QIcon('icons/icon.png'))
+        self.setWindowIcon(QIcon('icons/icon.png'))
 
-        self.openImage = QtWidgets.QAction(QtGui.QIcon('icons/fileopen.png'), u'Открыть файл', self)
+        self.openImage = QAction(QIcon('icons/fileopen.png'), u'Открыть файл', self)
         self.openImage.setShortcut('Ctrl+O')
 
-        self.saveImage = QtWidgets.QAction(QtGui.QIcon('icons/save.png'), 'Сохранить', self)
+        self.saveImage = QAction(QIcon('icons/save.png'), 'Сохранить', self)
         self.saveImage.setShortcut('Ctrl+S')
         self.saveImage.setDisabled(True)
 
-        self.refreshImageAction = QtWidgets.QAction(QtGui.QIcon('icons/refresh.png'), u'Обновить', self)
+        self.refreshImageAction = QAction(QIcon('icons/refresh.png'), u'Обновить', self)
         self.refreshImageAction.setDisabled(True)
 
-        self.exit = QtWidgets.QAction(QtGui.QIcon('icons/exit.png'), u'Выход', self)
+        self.exit = QAction(QIcon('icons/exit.png'), u'Выход', self)
         self.exit.triggered.connect(self.close)
 
         # Отвечает за счетчик количества цветов. По умолчанию 3.
@@ -46,7 +46,9 @@ class MainWindow(QtWidgets.QMainWindow):
         toolBar.addAction(self.exit)
 
         self.imgLabel = QtWidgets.QLabel()
-        self.imgLabel.setAlignment(QtCore.Qt.AlignHCenter | QtCore.Qt.AlignTop)
+        self.imgLabel.setAlignment(QtCore.Qt.AlignmentFlag.AlignCenter)
+        self.imgLabel.setSizePolicy(QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Expanding)
+        self.imgLabel.setMinimumSize(0, 0)
 
         # Текст приветствия в окне
         helloText = QtWidgets.QTextBrowser()
@@ -57,7 +59,7 @@ class MainWindow(QtWidgets.QMainWindow):
 
     def message(self, message):
         msg = QtWidgets.QMessageBox(self)
-        msg.setIcon(QtWidgets.QMessageBox.Critical)
+        msg.setIcon(QtWidgets.QMessageBox.Icon.Critical)
         msg.setText(message)
         msg.setWindowTitle("Error")
         msg.exec()
@@ -85,22 +87,22 @@ class MainWindow(QtWidgets.QMainWindow):
             vBoxLabels[key].addWidget(labelWidgets[key])
 
             labelWidgets[key].setText("#%s" % color)
-            labelWidgets[key].setAlignment(QtCore.Qt.AlignHCenter | QtCore.Qt.AlignVCenter)
+            labelWidgets[key].setAlignment(QtCore.Qt.AlignmentFlag.AlignHCenter | QtCore.Qt.AlignmentFlag.AlignVCenter)
             labelWidgets[key].setTextInteractionFlags(
-                QtCore.Qt.LinksAccessibleByMouse | QtCore.Qt.TextSelectableByMouse)
+                QtCore.Qt.TextInteractionFlag.LinksAccessibleByMouse | QtCore.Qt.TextInteractionFlag.TextSelectableByMouse)
             labelWidgets[key].setStyleSheet("QWidget { color: %s }" % core.matching(color))
 
         # Добавляем полученный набор виджетов на экран
         paint = QtWidgets.QWidget()
-        paint.setMaximumHeight(40)
-        paint.setMinimumHeight(40)
+        paint.setFixedHeight(40)
         paint.setLayout(self.hBoxColor)
 
         vBox = QtWidgets.QVBoxLayout()
-        vBox.addWidget(paint)
-        vBox.addWidget(self.imgLabel)
+        vBox.addWidget(paint, stretch=0)
+        vBox.addWidget(self.imgLabel, stretch=1)
 
         mainWidget = QtWidgets.QWidget()
         mainWidget.setLayout(vBox)
+        mainWidget.setSizePolicy(QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Expanding)
 
         self.setCentralWidget(mainWidget)
