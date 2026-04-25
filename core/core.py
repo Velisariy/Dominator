@@ -1,5 +1,3 @@
-from collections import namedtuple
-from math import sqrt
 import colorsys
 import numpy as np
 
@@ -57,10 +55,6 @@ def kmeans(coords, counts, k):
             break
 
     return np.round(centers).astype(int)
-
-
-def lum(r, g, b):
-    return sqrt(.241 * r + .691 * g + .068 * b)
 
 
 def matching(color):
