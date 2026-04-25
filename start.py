@@ -1,11 +1,13 @@
 #!/usr/bin/env python3
 
 import sys
+import os
 from time import time
 from core import design
 from core.image_collector import ImageCollector
 from core.pdf_generator import PdfGenerator, CAN_GENERATE_PDF
 from PyQt6 import QtWidgets, QtGui, QtCore
+from PyQt6.QtCore import QUrl, QFileInfo
 
 class MainProgram(design.MainWindow):
     """
@@ -93,11 +95,23 @@ class MainProgram(design.MainWindow):
         colors = self.colors
         imgfile = self.filename
         
-        generator = PdfGenerator()
-        success = generator.save_pdf(file, colors, imgfile)
+        try:
+            generator = PdfGenerator()
+            pdf_time = generator.save_pdf(file, colors, imgfile)
+        except Exception as e:
+            print(f"Ошибка при генерации PDF: {e}")
+            return
         
-        if not success:
+        if not os.path.exists(file):
             return self.message('Ошибка при сохранении PDF')
+        
+        total_time = round(pdf_time, 3)
+        self.statusBar().showMessage("Выполнено за {} сек.".format(total_time))
+
+        # Открываем папку с сохраненным файлом
+        directory = QFileInfo(imgfile).absolutePath()
+        path = QUrl.fromLocalFile(directory)
+        QtGui.QDesktopServices.openUrl(path)
 
     def refreshImage(self):
         self.procImage(self.filename)

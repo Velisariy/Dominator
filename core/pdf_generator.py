@@ -10,6 +10,7 @@ except ImportError:
     CAN_GENERATE_PDF = False
 
 from core.core import matching as match_func
+from time import time
 
 class PdfGenerator:
     """Генератор PDF отчётов с доминирующими цветами."""
@@ -26,6 +27,8 @@ class PdfGenerator:
             colors: Список цветов в формате hex (#RRGGBB)
             imgfile: Путь к исходному изображению
         """
+        
+        start_time = time()
 
         canvas = Canvas(file, pagesize=A4)
         
@@ -48,6 +51,10 @@ class PdfGenerator:
                             preserveAspectRatio=True, anchor='nw')
 
         canvas.save()
+        
+        end_time = time()
+
+        return round(end_time - start_time, 3)
 
     def _matching(self, color):
         """Определение цвета текста для читабельности.
