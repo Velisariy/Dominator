@@ -12,7 +12,7 @@ class MainWindow(QtWidgets.QMainWindow):
         super().__init__()
 
         self.resize(640, 480)
-        self.setMinimumSize(100, 100)
+        self.setMinimumSize(400, 300)
         self.colors = []
         self.filename = ''
         self.setWindowTitle(u"Доминатор")

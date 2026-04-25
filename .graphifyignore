@@ -1,0 +1,5 @@
+# .graphifyignore example
+AGENTS.md          # graphify install files — don't extract your own instructions as knowledge
+CLAUDE.md
+GEMINI.md
+.opencode/

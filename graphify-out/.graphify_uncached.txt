@@ -1,9 +1,8 @@
-AGENTS.md
-hello.html
-README.md
-requirements.txt
-icons/exit.png
-icons/fileopen.png
-icons/icon.png
-icons/refresh.png
-icons/save.png
+/mnt/os/PyScripts/Dominator/hello.html
+/mnt/os/PyScripts/Dominator/README.md
+/mnt/os/PyScripts/Dominator/requirements.txt
+/mnt/os/PyScripts/Dominator/icons/exit.png
+/mnt/os/PyScripts/Dominator/icons/fileopen.png
+/mnt/os/PyScripts/Dominator/icons/icon.png
+/mnt/os/PyScripts/Dominator/icons/refresh.png
+/mnt/os/PyScripts/Dominator/icons/save.png
