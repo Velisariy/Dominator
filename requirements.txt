@@ -2,6 +2,7 @@
 Pillow~=12.0
 PyQt6~=6.8
 reportlab~=4.3
+numpy~=2.4
 
 # Development
 cx_Freeze~=8.5

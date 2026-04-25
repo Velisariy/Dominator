@@ -12,6 +12,7 @@ class MainWindow(QtWidgets.QMainWindow):
         super().__init__()
 
         self.resize(640, 480)
+        self.setMinimumSize(100, 100)
         self.colors = []
         self.filename = ''
         self.setWindowTitle(u"Доминатор")
@@ -45,7 +46,9 @@ class MainWindow(QtWidgets.QMainWindow):
         toolBar.addAction(self.exit)
 
         self.imgLabel = QtWidgets.QLabel()
-        self.imgLabel.setAlignment(QtCore.Qt.AlignmentFlag.AlignHCenter | QtCore.Qt.AlignmentFlag.AlignTop)
+        self.imgLabel.setAlignment(QtCore.Qt.AlignmentFlag.AlignCenter)
+        self.imgLabel.setSizePolicy(QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Expanding)
+        self.imgLabel.setMinimumSize(0, 0)
 
         # Текст приветствия в окне
         helloText = QtWidgets.QTextBrowser()
@@ -91,15 +94,15 @@ class MainWindow(QtWidgets.QMainWindow):
 
         # Добавляем полученный набор виджетов на экран
         paint = QtWidgets.QWidget()
-        paint.setMaximumHeight(40)
-        paint.setMinimumHeight(40)
+        paint.setFixedHeight(40)
         paint.setLayout(self.hBoxColor)
 
         vBox = QtWidgets.QVBoxLayout()
-        vBox.addWidget(paint)
-        vBox.addWidget(self.imgLabel)
+        vBox.addWidget(paint, stretch=0)
+        vBox.addWidget(self.imgLabel, stretch=1)
 
         mainWidget = QtWidgets.QWidget()
         mainWidget.setLayout(vBox)
+        mainWidget.setSizePolicy(QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Expanding)
 
         self.setCentralWidget(mainWidget)
